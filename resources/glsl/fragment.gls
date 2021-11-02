@@ -1,0 +1,10 @@
+#version 330 core
+in vec2 objOutTexCoord;
+
+out vec4 objFragColor;
+
+uniform sampler2D objTexture;
+void main()
+{
+  objFragColor = texture(objTexture, objOutTexCoord);
+}

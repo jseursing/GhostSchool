@@ -1,0 +1,16 @@
+#version 330 core
+layout(location = 0) in vec3 objPos;
+//layout(location = 1) in vec3 objColor;
+layout(location = 1) in vec2 objTexCoord;
+
+out vec2 objOutTexCoord;
+uniform mat4 transform;
+
+void main()
+{
+  // If no rotation, just draw to specified destination
+  gl_Position = transform * vec4(objPos, 1.0);
+
+//  objOutColor = objColor;
+  objOutTexCoord = objTexCoord;
+}
