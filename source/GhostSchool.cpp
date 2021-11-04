@@ -130,8 +130,12 @@ void GhostSchool::ResetGameplay()
   NewGame = true;
 
   ScoreText->SetCurrentText("Score: 0");
-  GameOverText->DisableRender();
   ScoreSprite->DisableRender();
+
+  StatusText->SetX(260);
+  StatusText->SetY(400);
+  StatusText->SetCurrentText("Ready!");
+  StatusText->EnableRender();
 
   // Play intro song
   SoundEngine::Instance()->Play(GhostTypes::AUDIO_INTRO_ID);
@@ -156,6 +160,12 @@ void GhostSchool::ProcessPlayerDeath()
   if (0 == PlayerLives)
   {
     GameOver = true;
+
+    Player->LockUpdate();
+
+    StatusText->SetX(210);
+    StatusText->SetCurrentText("Game Over!");
+    StatusText->EnableRender();
   }
   else
   {
@@ -302,7 +312,7 @@ GhostSchool::GhostSchool(int argc, char* argv[]) :
   ScoreSprite(nullptr),
   Arena(nullptr),
   ScoreText(nullptr),
-  GameOverText(nullptr),
+  StatusText(nullptr),
   DelayedLockout(0),
   DebugFlags(GODMODE) // TODO
 {
@@ -368,6 +378,7 @@ void GhostSchool::ProcessNewGameState(uint32_t tick)
   if (false == SoundEngine::Instance()->IsActive(GhostTypes::AUDIO_INTRO_ID))
   {
     NewGame = false;
+    StatusText->DisableRender();
     Arena->UnlockUpdate();
     Player->UnlockUpdate();
     Ghosts->UnlockUpdate();
@@ -385,11 +396,11 @@ void GhostSchool::ProcessGameOverState(uint32_t tick)
   uint32_t remTick = tick % 20;
   if (15 > remTick)
   {
-    GameOverText->EnableRender();
+    StatusText->EnableRender();
   }
   else
   {
-    GameOverText->DisableRender();
+    StatusText->DisableRender();
   }
 }
 
@@ -442,22 +453,23 @@ void GhostSchool::Initialize(OriginTypeEnum origin)
   ScoreText->SetSpacing(20);
   ScoreText->SetCurrentText("Score: 0");
 
-  GameOverText = new OGLText(ProgramId,
-                             GhostTypes::Sprite_Font,
-                             GhostTypes::WindowWidth,
-                             GhostTypes::WindowHeight,
-                             26,
-                             5);
-  OGLSpriteMgr::Instance()->RegisterSprite(GameOverText, "font");
-  GameOverText->DisableRender();
-  GameOverText->RegisterCharSet('A', 'Z', 26);
-  GameOverText->RegisterCharSet('a', 'z', 52);
-  GameOverText->SetCharacterMapping('-', 22);
-  GameOverText->SetSize(GhostTypes::PlayerSize, GhostTypes::PlayerSize);
-  GameOverText->SetX(10);
-  GameOverText->SetY(GhostTypes::WindowHeight - 75);
-  GameOverText->SetSpacing(25);
-  GameOverText->SetCurrentText("Game Over! Press Any Key");
+  StatusText = new OGLText(ProgramId,
+                            GhostTypes::Sprite_Font,
+                            GhostTypes::WindowWidth,
+                            GhostTypes::WindowHeight,
+                            26,
+                            5);
+  OGLSpriteMgr::Instance()->RegisterSprite(StatusText, "statusText");
+  StatusText->DisableRender();
+  StatusText->RegisterCharSet('A', 'Z', 26);
+  StatusText->RegisterCharSet('a', 'z', 52);
+  StatusText->SetCharacterMapping('-', 22);
+  StatusText->SetCharacterMapping('!', 10);
+  StatusText->SetSize(GhostTypes::PlayerSize, GhostTypes::PlayerSize);
+  StatusText->SetX(260);
+  StatusText->SetY(400);
+  StatusText->SetSpacing(25);
+  StatusText->SetCurrentText("Ready!");
 
   GhostHud = new HudDisplay(ProgramId,
                             GhostTypes::Sprite_Hud,

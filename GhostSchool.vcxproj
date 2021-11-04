@@ -92,7 +92,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>X:\git\GhostSchool\include;X:\git\OGL\include;$(IncludePath)</IncludePath>
-    <LibraryPath>X:\git\OGL\Debug;X:\git\OGL\lib;X:\Projects\GhostSchool\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>X:\git\OGL\Debug;X:\Projects\GhostSchool\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
