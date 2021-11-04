@@ -91,8 +91,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>X:\Projects\OGL\GhostSchool\include;X:\Projects\OGL\include;$(IncludePath)</IncludePath>
-    <LibraryPath>X:\Projects\OGL\Debug;X:\Projects\OGL\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>X:\git\GhostSchool\include;X:\git\OGL\include;$(IncludePath)</IncludePath>
+    <LibraryPath>X:\git\OGL\Debug;X:\git\OGL\lib;X:\Projects\GhostSchool\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
