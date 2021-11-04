@@ -63,7 +63,7 @@ private:
 
   GhostArena* Arena;
   OGLText* ScoreText;
-  OGLText* GameOverText;
+  OGLText* StatusText;
   HudDisplay* GhostHud;
   FruitController* Fruit;
   GhostController* Ghosts;

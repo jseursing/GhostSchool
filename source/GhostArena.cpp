@@ -4,6 +4,7 @@
 #include "GhostSchool.h"
 #include "OGLSpriteMgr.h"
 #include "OGLSprite.h"
+#include "OGLTimedSprite.h"
 #include "PacmanController.h"
 #include "SoundEngine.h"
 #include <fstream>
@@ -32,7 +33,20 @@ GhostArena* GhostArena::Instance(uint32_t programId)
     instance.Sprite->SetX(0);
     instance.Sprite->SetY(0);
 
-    // Set arena
+    // Initialize pellet covers
+    instance.PelletCovers = new OGLTimedSprite(programId, 
+                                               GhostTypes::WindowWidth,
+                                               GhostTypes::WindowHeight, 
+                                               GhostTypes::ArenaWidth,
+                                               GhostTypes::ArenaHeight,
+                                               GhostTypes::HTileCount,
+                                               GhostTypes::VTileCount);
+    OGLSpriteMgr::Instance()->RegisterSprite(instance.PelletCovers, "pelletCover");
+    instance.PelletCovers->SetSize(instance.ArenaWidth, instance.ArenaHeight);
+    instance.PelletCovers->SetX(0);
+    instance.PelletCovers->SetY(0);
+    instance.PelletCovers->BackupImage();
+
     instance.SetLevel(0);
   }
 
@@ -136,7 +150,8 @@ void GhostArena::SetLevel(uint32_t level)
 
   // Populate Arena Tiles with the level data 
   bool syntaxError = false;
-
+  uint32_t currentLine = 0;
+  uint32_t currentPellet = 0;
   while (levelStream.getline(buffer, sizeof(buffer)))
   {
     if (('#' != buffer[0]) &&
@@ -167,6 +182,8 @@ void GhostArena::SetLevel(uint32_t level)
           syntaxError = true;
         }
       }
+
+      ++currentLine;
     }
 
     // Exit the loop if error
@@ -249,10 +266,18 @@ uint32_t GhostArena::GetCurrentLevel() const
 // --------------------------------------------------------------------------------------
 void GhostArena::Update(uint32_t tick)
 {
+  static uint32_t flashTick = 0;
   if (0 == (tick % GhostTypes::UpdateFreq))
   {
     if (false == SkipUpdate)
     {
+      ++flashTick;
+      // Every 5 ticks, enable the Pellet Covers
+      if (0 == (flashTick % 20))
+      {
+        PelletCovers->StartRender(10);
+      }
+
       // Retrieve player's current tile
       int32_t hTile = 0;
       int32_t vTile = 0;

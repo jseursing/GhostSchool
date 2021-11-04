@@ -6,6 +6,7 @@
 
 // Forward declarations
 class OGLSprite;
+class OGLTimedSprite;
 
 
 // This class will be used to represent the arena
@@ -36,6 +37,7 @@ private:
 
   bool SkipUpdate;
   OGLSprite* Sprite;
+  OGLTimedSprite* PelletCovers;
   GhostTypes::ArenaEnum ArenaLevel;
   uint32_t CurrentLevel;
   float ArenaWidth;
