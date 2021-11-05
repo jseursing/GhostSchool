@@ -59,16 +59,18 @@ void CutScenes::Render(uint32_t tick)
     ActSprite->Render(0);
     ActText->Render(1);
 
-    if (20 == ActSprite->GetRemainingTicks())
+    if ((25 == ActSprite->GetRemainingTicks()) ||
+        (15 == ActSprite->GetRemainingTicks()))
     {
       ActSprite->SetActiveFrame(1);
     }
-    else if (15 == ActSprite->GetRemainingTicks())
+    else if (20 == ActSprite->GetRemainingTicks())
     {
       ActSprite->SetActiveFrame(2);
     }
     else if (10 == ActSprite->GetRemainingTicks())
     {
+      ActSprite->SetActiveFrame(0);
       ActText->SetCurrentText(" ");
     }
   }
@@ -223,6 +225,17 @@ void CutScenes::RenderAct1(uint32_t tick)
 
             MSPacman->SetY(currY);
             MSPacman->SetActiveFrame(6 + (frameTick % 2));
+
+            if (50 < (Inky->GetAbsX() - Pinky->GetAbsX()))
+            {
+              float currX = Inky->GetAbsX() - 6;
+              Inky->SetX(currX);
+              Inky->SetActiveFrame(2 + (frameTick % 2));
+
+              currX = Pinky->GetAbsX() + 6;
+              Pinky->SetX(currX);
+              Pinky->SetActiveFrame(frameTick % 2);
+            }
           }
           else
           {
