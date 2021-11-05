@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\CutScenes.cpp" />
     <ClCompile Include="source\FruitController.cpp" />
     <ClCompile Include="source\GhostArena.cpp" />
     <ClCompile Include="source\GhostController.cpp" />
@@ -29,6 +30,7 @@
     <ClCompile Include="source\PacmanController.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\CutScenes.h" />
     <ClInclude Include="include\FruitController.h" />
     <ClInclude Include="include\GhostArena.h" />
     <ClInclude Include="include\GhostController.h" />
@@ -92,7 +94,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>X:\git\GhostSchool\include;X:\git\OGL\include;$(IncludePath)</IncludePath>
-    <LibraryPath>X:\git\OGL\Debug;X:\Projects\GhostSchool\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>X:\git\OGL\Debug;X:\git\GhostSchool\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -111,7 +113,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

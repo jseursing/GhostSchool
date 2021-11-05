@@ -48,6 +48,14 @@ public:
     NO_DIRECTION
   };
 
+  enum ActTypeEnum
+  {
+    ACT1,
+    ACT2,
+    ACT3,
+    MAX_ACTS
+  };
+
   // Size of the arena area (Gimp shows 225 x 248) - scale by 3
   static const float PlayerSize;
   static const float ArenaWidth;
@@ -84,8 +92,13 @@ public:
   static const char* Sprite_Font;
   static const char* Sprite_Score;
   static const char* Sprite_Player;
+  static const char* Sprite_Pacman;
   static const char* Sprite_Ghost[MAX_GHOST];
   static const char* Sprite_Arena;
+  static const char* Sprite_Act;
+  static const char* Sprite_Bird;
+  static const char* Sprite_Junior;
+  static const char* Sprite_Heart;
   static const char* Data_Arena[MAX_ARENA];
 
   // Audio resource paths and constants
@@ -99,6 +112,7 @@ public:
   static uint32_t AUDIO_EATFRUIT_ID;
   static uint32_t AUDIO_ADDLIFE_ID;
   static uint32_t AUDIO_GHOST_ID[MAX_GHOST];
+  static uint32_t AUDIO_ACT_ID[MAX_ACTS];
 
   static const char* Audio_Intro;
   static const char* Audio_SPellet;
@@ -110,4 +124,5 @@ public:
   static const char* Audio_EatFruit;
   static const char* Audio_AddLife;
   static const char* Audio_Ghost[MAX_GHOST];
+  static const char* Audio_Act[MAX_ACTS];
 };

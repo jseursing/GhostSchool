@@ -48,4 +48,8 @@ private:
   std::vector<GhostTypes::TileTypeEnum> TravelTiles;
   std::vector<uint8_t> MoveSet;
   std::mutex ArenaLock;  
+
+#if _DEBUG
+  friend class GhostSchool;
+#endif
 };

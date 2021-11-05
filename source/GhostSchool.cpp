@@ -1,3 +1,4 @@
+#include "CutScenes.h"
 #include "FruitController.h"
 #include "GhostArena.h"
 #include "GhostController.h"
@@ -12,6 +13,10 @@
 #include "PacmanController.h"
 #include "SoundEngine.h"
 
+#if _DEBUG
+#include <iostream>
+#endif
+
 // External dependencies
 #include <fstream>
 #include <math.h>
@@ -23,8 +28,11 @@
 // Graphics
 #pragma comment(lib, "GLu32.lib")
 #pragma comment(lib, "opengl32.lib")
+#if _DEBUG
+#pragma comment(lib, "SOILd.lib")
+#else
 #pragma comment(lib, "SOIL.lib")
-
+#endif
 // Audio
 #pragma comment(lib, "dsound.lib")
 #pragma comment(lib, "dxguid.lib")
@@ -92,6 +100,23 @@ void GhostSchool::SetLevel(uint32_t level)
   default:
     PlayerSpeedAdj = 2;
     GhostSpeedAdj = 4;
+  }
+
+  // Check for Cut Scenes!
+  switch (level)
+  {
+    case 2:
+      SoundEngine::Instance()->Play(GhostTypes::AUDIO_ACT_ID[0]);
+      CutScenes::Instance()->StartCutScene(0);
+      break;
+    case 5:
+      SoundEngine::Instance()->Play(GhostTypes::AUDIO_ACT_ID[1]);
+      CutScenes::Instance()->StartCutScene(1);
+      break;
+    case 9:
+      SoundEngine::Instance()->Play(GhostTypes::AUDIO_ACT_ID[2]);
+      CutScenes::Instance()->StartCutScene(2);
+      break;
   }
 }
 
@@ -296,6 +321,15 @@ float GhostSchool::GetHeight() const
 }
 
 // --------------------------------------------------------------------------------------
+// Function: GetProgramId
+// Notes: None
+// --------------------------------------------------------------------------------------
+uint32_t GhostSchool::GetProgramId() const
+{
+  return ProgramId;
+}
+
+// --------------------------------------------------------------------------------------
 // Function: GhostSchool
 // Notes: None
 // --------------------------------------------------------------------------------------
@@ -313,8 +347,7 @@ GhostSchool::GhostSchool(int argc, char* argv[]) :
   Arena(nullptr),
   ScoreText(nullptr),
   StatusText(nullptr),
-  DelayedLockout(0),
-  DebugFlags(GODMODE) // TODO
+  DelayedLockout(0)
 {
 }
 
@@ -511,6 +544,12 @@ void GhostSchool::Initialize(OriginTypeEnum origin)
                                            GhostTypes::AUDIO_GHOST_ID[2]);
     SoundEngine::Instance()->RegisterSound(GhostTypes::Audio_Ghost[3], 
                                            GhostTypes::AUDIO_GHOST_ID[3]);
+    SoundEngine::Instance()->RegisterSound(GhostTypes::Audio_Act[0],
+                                           GhostTypes::AUDIO_ACT_ID[0]);
+    SoundEngine::Instance()->RegisterSound(GhostTypes::Audio_Act[1],
+                                           GhostTypes::AUDIO_ACT_ID[1]);
+    SoundEngine::Instance()->RegisterSound(GhostTypes::Audio_Act[2],
+                                           GhostTypes::AUDIO_ACT_ID[2]);
   }
 }
 
@@ -523,31 +562,39 @@ void GhostSchool::DrawGraphics(uint32_t tick)
   // GL Draw Begin
   glClear(GL_COLOR_BUFFER_BIT);
 
-  if (true == NewGame)
+  // If a cutscene is in process, do not update or draw anything else.
+  if (false == CutScenes::Instance()->IsFinished())
   {
-    ProcessNewGameState(tick);
-  }
-
-  if (true == GameOver)
-  {
-    ProcessGameOverState(tick);
-  }
-
-  // Update arena, player, and draw renders
-  if (0 == DelayedLockout)
-  {
-    Arena->Update(tick);
-    Player->Update(tick);
-    Ghosts->Update(tick);
-    Fruit->Update(tick);
+    CutScenes::Instance()->Render(tick);
   }
   else
   {
-    --DelayedLockout;
-  }
+    if (true == NewGame)
+    {
+      ProcessNewGameState(tick);
+    }
 
-  // Render all sprites
-  OGLSpriteMgr::Instance()->Render();
+    if (true == GameOver)
+    {
+      ProcessGameOverState(tick);
+    }
+
+    // Update arena, player, and draw renders
+    if (0 == DelayedLockout)
+    {
+      Arena->Update(tick);
+      Player->Update(tick);
+      Ghosts->Update(tick);
+      Fruit->Update(tick);
+    }
+    else
+    {
+      --DelayedLockout;
+    }
+
+    // Render all sprites
+    OGLSpriteMgr::Instance()->Render();
+  }
 
   // Refresh
   OGLExt::GLSwapBuffers();
@@ -580,6 +627,12 @@ void GhostSchool::OnKeyPressed(int32_t key)
     case VK_DOWN:
       Player->ProcessKey(GhostTypes::DOWN);
       break;
+#if _DEBUG
+    case VK_F4:
+      Arena->RemainingPellets = 1;
+      std::cout << "[DEBUG] Setting Remaining Pellets to 1" << std::endl;
+      break;
+#endif
     }
   }
 }
