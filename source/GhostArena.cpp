@@ -37,8 +37,8 @@ GhostArena* GhostArena::Instance(uint32_t programId)
     instance.PelletCovers = new OGLTimedSprite(programId, 
                                                GhostTypes::WindowWidth,
                                                GhostTypes::WindowHeight, 
-                                               GhostTypes::ArenaWidth,
-                                               GhostTypes::ArenaHeight,
+                                               static_cast<uint32_t>(GhostTypes::ArenaWidth),
+                                               static_cast<uint32_t>(GhostTypes::ArenaHeight),
                                                GhostTypes::HTileCount,
                                                GhostTypes::VTileCount);
     OGLSpriteMgr::Instance()->RegisterSprite(instance.PelletCovers, "pelletCover");
@@ -120,15 +120,18 @@ void GhostArena::SetLevel(uint32_t level)
     Sprite->RestoreImage();
     break;
   default:
-    ArenaLevel = (GhostTypes::ARENA4 > (CurrentLevel % 8) ? GhostTypes::ARENA4 : 
-                                                            GhostTypes::ARENA5);
-    if (1 == (CurrentLevel % 4))
     {
-      Sprite->BackupImage();
-    }
-    else
-    {
-      Sprite->RestoreImage();
+      uint32_t scaledLevel = CurrentLevel - 13;
+      ArenaLevel = (GhostTypes::ARENA4 > (scaledLevel % 8) ? GhostTypes::ARENA4 :
+                                                             GhostTypes::ARENA5);
+      if (0 == (scaledLevel % 4))
+      {
+        Sprite->BackupImage();
+      }
+      else
+      {
+        Sprite->RestoreImage();
+      }
     }
   }
 

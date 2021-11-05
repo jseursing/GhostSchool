@@ -29,18 +29,9 @@ public:
 
   float GetWidth() const;
   float GetHeight() const;
+  uint32_t GetProgramId() const;
   GhostSchool(int argc, char** argv);
   ~GhostSchool();
-
-  // -----------------
-  // Debug flags
-  // -----------------
-  enum DebugFlag
-  {
-    GODMODE = 1
-  };
-  uint32_t DebugFlags;
-  // -----------------
 
 private:
 

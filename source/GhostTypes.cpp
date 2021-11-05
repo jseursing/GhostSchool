@@ -29,6 +29,7 @@ const char* GhostTypes::Sprite_Hud    = ".\\resources\\hud.png";
 const char* GhostTypes::Sprite_Font   = ".\\resources\\font.png";
 const char* GhostTypes::Sprite_Score  = ".\\resources\\scoresprite.png";
 const char* GhostTypes::Sprite_Player = ".\\resources\\mpmsprite.png";
+const char* GhostTypes::Sprite_Pacman = ".\\resources\\pmsprite.png";
 const char* GhostTypes::Sprite_Ghost[MAX_GHOST] =
 {
   ".\\resources\\ghost0.png",
@@ -36,7 +37,11 @@ const char* GhostTypes::Sprite_Ghost[MAX_GHOST] =
   ".\\resources\\ghost2.png",
   ".\\resources\\ghost3.png",
 };
-const char* GhostTypes::Sprite_Arena = ".\\resources\\levelsprite.png";
+const char* GhostTypes::Sprite_Arena  = ".\\resources\\levelsprite.png";
+const char* GhostTypes::Sprite_Act    = ".\\resources\\actsprite.png";
+const char* GhostTypes::Sprite_Bird   = ".\\resources\\birdsprite.png";
+const char* GhostTypes::Sprite_Junior = ".\\resources\\juniorsprite.png";
+const char* GhostTypes::Sprite_Heart  = ".\\resources\\heartsprite.png";
 const char* GhostTypes::Data_Arena[MAX_ARENA] =
 {
   ".\\resources\\level0.dat",
@@ -57,6 +62,7 @@ uint32_t GhostTypes::AUDIO_DEATH_ID            = 0;
 uint32_t GhostTypes::AUDIO_EATFRUIT_ID         = 0;
 uint32_t GhostTypes::AUDIO_ADDLIFE_ID          = 0;
 uint32_t GhostTypes::AUDIO_GHOST_ID[MAX_GHOST] = { 0, 0, 0, 0 };
+uint32_t GhostTypes::AUDIO_ACT_ID[MAX_ACTS] = {0, 0, 0};
 
 const char* GhostTypes::Audio_Intro    = ".\\resources\\audio\\Start.wav";
 const char* GhostTypes::Audio_SPellet  = ".\\resources\\audio\\SPellet.wav";
@@ -73,6 +79,12 @@ const char* GhostTypes::Audio_Ghost[MAX_GHOST] =
   ".\\resources\\audio\\Ghost1.wav",
   ".\\resources\\audio\\Ghost2.wav",
   ".\\resources\\audio\\Ghost3.wav"
+};
+const char* GhostTypes::Audio_Act[MAX_ACTS] =
+{
+  ".\\resources\\audio\\Act1.wav",
+  ".\\resources\\audio\\Act2.wav",
+  ".\\resources\\audio\\Act3.wav"
 };
 
 uint32_t GhostTypes::TileIndex(int32_t h, int32_t v)
