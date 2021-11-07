@@ -39,15 +39,14 @@ GhostArena* GhostArena::Instance(uint32_t programId)
                                                GhostTypes::WindowHeight, 
                                                static_cast<uint32_t>(GhostTypes::ArenaWidth),
                                                static_cast<uint32_t>(GhostTypes::ArenaHeight),
-                                               GhostTypes::HTileCount,
-                                               GhostTypes::VTileCount);
+                                               1, 1);
     OGLSpriteMgr::Instance()->RegisterSprite(instance.PelletCovers, "pelletCover");
     instance.PelletCovers->SetSize(instance.ArenaWidth, instance.ArenaHeight);
     instance.PelletCovers->SetX(0);
     instance.PelletCovers->SetY(0);
-    instance.PelletCovers->BackupImage();
 
-    instance.SetLevel(0);
+    // Backup buffer
+    instance.PelletCovers->BackupImage();
   }
 
   return &instance;
@@ -172,8 +171,20 @@ void GhostArena::SetLevel(uint32_t level)
           TravelTiles.push_back(GhostTypes::SPELLET);
           break;
         case 'P':
+        {
           ++RemainingPellets;
           TravelTiles.push_back(GhostTypes::BPELLET);
+
+          float hRatio = GhostTypes::ArenaWidth / GhostTypes::HTileCount;
+          float vRatio = GhostTypes::ArenaHeight / GhostTypes::VTileCount;
+          uint32_t tileX = static_cast<uint32_t>(i * hRatio);
+          uint32_t tileY = static_cast<uint32_t>(currentLine * vRatio);
+          PelletCovers->UpdateImage(tileX - 1,
+                                    tileY,
+                                    static_cast<uint32_t>(hRatio) + 2, 
+                                    static_cast<uint32_t>(vRatio), 
+                                    0, 0, 0, 255);
+        }
           break;
         case 'T':
           TravelTiles.push_back(GhostTypes::PIPELINE);
@@ -278,7 +289,7 @@ void GhostArena::Update(uint32_t tick)
       // Every 5 ticks, enable the Pellet Covers
       if (0 == (flashTick % 20))
       {
-        PelletCovers->StartRender(10);
+        PelletCovers->StartRender(5);
       }
 
       // Retrieve player's current tile

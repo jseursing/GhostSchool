@@ -41,6 +41,7 @@ private:
   virtual void Initialize(OriginTypeEnum origin);
   virtual void DrawGraphics(uint32_t tick);
   virtual void OnKeyPressed(int32_t key);
+  virtual void OnJoystick(uint32_t msg, WPARAM wParam, LPARAM lParam);
 
   // Arena object
   bool Exit;
