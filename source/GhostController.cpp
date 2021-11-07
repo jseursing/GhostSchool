@@ -530,16 +530,20 @@ void GhostController::UpdateDirection(GhostTypes::GhostTypeEnum ghost)
       break;
       case CHASING:
       {
+        // Retrieve target tiles
         int32_t tH = 0;
         int32_t tV = 0;
         PacmanController::Instance()->GetTiles(tH, tV);
-        SetTargetDirection(ghost, tH, tV, true);
 
-        // Trim DirSequence
-        while (DirSequence[ghost].size() > MaximumSequence[ghost])
-        {
-          DirSequence[ghost].erase(DirSequence[ghost].begin());
-        }
+        // If the distance from ghost to target is extensive, shorten the length.
+        int32_t gH = HTile[ghost];
+        int32_t gV = VTile[ghost];
+        double distance = sqrt(pow(HTile[ghost] - tH, 2) + 
+                               pow(VTile[ghost] - tV, 2));
+        MaximumSequence[ghost] = (10.0 < distance ? 10 : 32);
+
+        // Retrieve directions
+        SetTargetDirection(ghost, tH, tV, true);
       } 
       break;
       case RETREATING:
@@ -558,12 +562,14 @@ void GhostController::UpdateDirection(GhostTypes::GhostTypeEnum ghost)
         }
         else
         {
+          MaximumSequence[ghost] = 16;
           SetTargetDirection(ghost, tH, tV, false);
         }
       }
       break;
       case EXITING:
       {
+        MaximumSequence[ghost] = 32;
         SetExitDirection(ghost);
       };
       break;
@@ -577,15 +583,12 @@ void GhostController::UpdateDirection(GhostTypes::GhostTypeEnum ghost)
     DirRequest[ghost] = DirSequence[ghost].back();
     DirSequence[ghost].pop_back();
 
-    // If the CurrentQuadrant is not equal to the Last one,
-    // reset DirSequence in order to update direction if currently chasing.
-    if (CHASING == CurrentState[ghost])
+    // Trim DirSequence
+    if (DirSequence[ghost].size() > MaximumSequence[ghost])
     {
-      // Method of limiting the sequence of direction to stay on the player's track.
-      if (MaximumSequence[ghost] < DirSequence[ghost].size())
-      {
-        DirSequence[ghost].pop_back();
-      }
+      size_t cnt = DirSequence[ghost].size() - MaximumSequence[ghost] - 1;
+      DirSequence[ghost].erase(DirSequence[ghost].begin(), 
+                                DirSequence[ghost].begin() + cnt);
     }
   }
 }
@@ -1521,7 +1524,7 @@ GhostController::GhostController() :
              GhostTypes::NO_DIRECTION, 
              GhostTypes::NO_DIRECTION, 
              GhostTypes::NO_DIRECTION},
-  MaximumSequence{32, 32, UINT_MAX, UINT_MAX},
+  MaximumSequence{32, 32, 32, 32},
   ScoreMultiplier(1),
   SetVulnerable{false, false, false, false},
   CurrentState{ENCASED, ENCASED, ENCASED, ENCASED},

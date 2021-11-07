@@ -71,6 +71,8 @@ public:
   static const uint32_t HTileCount;
   static const uint32_t VTileCount;
   static const uint32_t TotalTiles;
+  static const float HTileRatio;
+  static const float VTileRatio;
   static const uint32_t BaseTransition;
 
   static uint32_t TileIndex(int32_t h, int32_t v);

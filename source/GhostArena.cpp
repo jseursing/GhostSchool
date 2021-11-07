@@ -148,7 +148,10 @@ void GhostArena::SetLevel(uint32_t level)
     return;
   }
 
-  char buffer[1024 * 10] = { 0 }; // 10K of data
+  // Restore buffer
+  PelletCovers->RestoreImage();
+
+  char buffer[1024] = { 0 }; // 1K of data (File holds 968 Bytes)
 
   // Populate Arena Tiles with the level data 
   bool syntaxError = false;
@@ -175,14 +178,12 @@ void GhostArena::SetLevel(uint32_t level)
           ++RemainingPellets;
           TravelTiles.push_back(GhostTypes::BPELLET);
 
-          float hRatio = GhostTypes::ArenaWidth / GhostTypes::HTileCount;
-          float vRatio = GhostTypes::ArenaHeight / GhostTypes::VTileCount;
-          uint32_t tileX = static_cast<uint32_t>(i * hRatio);
-          uint32_t tileY = static_cast<uint32_t>(currentLine * vRatio);
+          uint32_t tileX = static_cast<uint32_t>(i * GhostTypes::HTileRatio);
+          uint32_t tileY = static_cast<uint32_t>(currentLine * GhostTypes::VTileRatio);
           PelletCovers->UpdateImage(tileX - 1,
                                     tileY,
-                                    static_cast<uint32_t>(hRatio) + 2, 
-                                    static_cast<uint32_t>(vRatio), 
+                                    static_cast<uint32_t>(GhostTypes::HTileRatio) + 2,
+                                    static_cast<uint32_t>(GhostTypes::VTileRatio),
                                     0, 0, 0, 255);
         }
           break;
@@ -306,16 +307,15 @@ void GhostArena::Update(uint32_t tick)
         SetTileType(hTile, vTile, GhostTypes::NOTHING);
 
         // Draw a black square over pellet
-        float hRatio = GhostTypes::ArenaWidth / GhostTypes::HTileCount;
-        float vRatio = GhostTypes::ArenaHeight / GhostTypes::VTileCount;
         float arenaOffset = GhostTypes::ArenaHeight * ArenaLevel;
-        uint32_t tileX = static_cast<uint32_t>(hTile * hRatio);
-        uint32_t tileY = static_cast<uint32_t>(arenaOffset + (vTile * vRatio));
+        uint32_t tileX = static_cast<uint32_t>(hTile * GhostTypes::HTileRatio);
+        uint32_t tileY = static_cast<uint32_t>(arenaOffset + 
+                                               (vTile * GhostTypes::VTileRatio));
         Sprite->UpdateImage(tileX, 
                             tileY, 
-                            static_cast<uint32_t>(hRatio), 
-                            static_cast<uint32_t>(vRatio), 
-                            1, 1, 1);
+                            static_cast<uint32_t>(GhostTypes::HTileRatio),
+                            static_cast<uint32_t>(GhostTypes::VTileRatio),
+                            1, 1, 1, 255);
 
         // Add points and play sound effect
         switch (type)
