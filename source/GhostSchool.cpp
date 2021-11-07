@@ -636,3 +636,58 @@ void GhostSchool::OnKeyPressed(int32_t key)
     }
   }
 }
+
+// --------------------------------------------------------------------------------------
+// Function: OnKeyPressed
+// Notes: None
+// --------------------------------------------------------------------------------------
+void GhostSchool::OnJoystick(uint32_t msg, WPARAM wParam, LPARAM lParam)
+{
+  // The first joystick event received will initialize our axis data.
+  static uint32_t xMidPoint = 0;
+  static uint32_t yMidPoint = 0;
+  static bool firstCall = true;
+  if (true == firstCall)
+  {
+    firstCall = false;
+    
+    // Retrieve a valid JoyStick Id
+    int32_t id = -1;
+    JOYINFOEX joyInfo;
+    joyInfo.dwSize = sizeof(JOYINFOEX);
+    joyInfo.dwFlags = JOY_RETURNALL;
+    for (size_t i = 0; i < 16; ++i)
+    {
+      if (JOYERR_NOERROR == joyGetPosEx(i, &joyInfo))
+      {
+        id = i;
+        break;
+      }
+    }
+
+    // Valid JoyStick found..
+    if (-1 != id)
+    {
+      JOYCAPS joyCaps;
+      joyGetDevCaps(id, &joyCaps, sizeof(JOYCAPS));
+      xMidPoint = static_cast<uint32_t>((joyCaps.wXmax - joyCaps.wXmin) / 2);
+      yMidPoint = static_cast<uint32_t>((joyCaps.wYmax - joyCaps.wYmin) / 2);
+    }
+  }
+
+  if ((MM_JOY1MOVE == msg) ||
+      (MM_JOY2MOVE == msg))
+  {
+    int32_t x = LOWORD(lParam);
+    int32_t y = HIWORD(lParam);
+
+    if (abs(x) > abs(y))
+    {
+      OnKeyPressed(x < xMidPoint ? VK_LEFT : VK_RIGHT);
+    }
+    else
+    {
+      OnKeyPressed(y < yMidPoint ? VK_UP : VK_DOWN);
+    }
+  }
+}
