@@ -14,6 +14,10 @@ const uint32_t GhostTypes::MaxLives       = 3;
 const uint32_t GhostTypes::HTileCount     = 28;
 const uint32_t GhostTypes::VTileCount     = 31;
 const uint32_t GhostTypes::TotalTiles     = HTileCount * VTileCount;
+const float GhostTypes::HTileRatio        = GhostTypes::ArenaWidth / 
+                                            GhostTypes::HTileCount;
+const float GhostTypes::VTileRatio        = GhostTypes::ArenaHeight / 
+                                            GhostTypes::VTileCount;
 const uint32_t GhostTypes::BaseTransition = 8;
 
 const uint32_t GhostTypes::UpdateFreq    = 2;
