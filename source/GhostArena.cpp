@@ -45,7 +45,8 @@ GhostArena* GhostArena::Instance(uint32_t programId)
     instance.PelletCovers->SetX(0);
     instance.PelletCovers->SetY(0);
 
-    // Backup buffer
+    // Backup buffers
+    instance.Sprite->BackupImage();
     instance.PelletCovers->BackupImage();
   }
 
@@ -87,23 +88,17 @@ void GhostArena::SetLevel(uint32_t level)
   {
   case 0:
     ArenaLevel = GhostTypes::ARENA0;
-    Sprite->BackupImage();
-    break;
   case 1:
     Sprite->RestoreImage();
     break;
   case 2:
     ArenaLevel = GhostTypes::ARENA1;
-    Sprite->BackupImage();
-    break;
   case 3:
   case 4:
     Sprite->RestoreImage();
     break;
   case 5:
     ArenaLevel = GhostTypes::ARENA2;
-    Sprite->BackupImage();
-    break;
   case 6:
   case 7:
   case 8:
@@ -111,8 +106,6 @@ void GhostArena::SetLevel(uint32_t level)
     break;
   case 9:
     ArenaLevel = GhostTypes::ARENA3;
-    Sprite->BackupImage();
-    break;
   case 10:
   case 11:
   case 12:
@@ -123,14 +116,7 @@ void GhostArena::SetLevel(uint32_t level)
       uint32_t scaledLevel = CurrentLevel - 13;
       ArenaLevel = (GhostTypes::ARENA4 > (scaledLevel % 8) ? GhostTypes::ARENA4 :
                                                              GhostTypes::ARENA5);
-      if (0 == (scaledLevel % 4))
-      {
-        Sprite->BackupImage();
-      }
-      else
-      {
-        Sprite->RestoreImage();
-      }
+      Sprite->RestoreImage();
     }
   }
 
