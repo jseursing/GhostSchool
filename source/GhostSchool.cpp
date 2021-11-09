@@ -5,6 +5,7 @@
 #include "GhostSchool.h"
 #include "GhostTypes.h"
 #include "HudDisplay.h"
+#include "JoystickCtrl.h"
 #include "OGLExt.h"
 #include "OGLSpriteMgr.h"
 #include "OGLSprite.h"
@@ -37,6 +38,8 @@
 #pragma comment(lib, "dsound.lib")
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "winmm.lib")
+// Joystick
+#pragma comment(lib, "dinput8.lib")
 
 // --------------------------------------------------------------------------------------
 // Function: Instance
@@ -551,6 +554,12 @@ void GhostSchool::Initialize(OriginTypeEnum origin)
     SoundEngine::Instance()->RegisterSound(GhostTypes::Audio_Act[2],
                                            GhostTypes::AUDIO_ACT_ID[2]);
   }
+
+  // Initialize Joystick controller
+  if (0 != JoystickCtrl::Instance()->QueryControllerDevices())
+  {
+    JoystickCtrl::Instance()->CreateDeviceInterface(0); // Attach to first device
+  }
 }
 
 // --------------------------------------------------------------------------------------
@@ -638,56 +647,29 @@ void GhostSchool::OnKeyPressed(int32_t key)
 }
 
 // --------------------------------------------------------------------------------------
-// Function: OnKeyPressed
+// Function: OnIdle
 // Notes: None
 // --------------------------------------------------------------------------------------
-void GhostSchool::OnJoystick(uint32_t msg, WPARAM wParam, LPARAM lParam)
+void GhostSchool::OnIdle()
 {
-  // The first joystick event received will initialize our axis data.
-  static uint32_t xMidPoint = 0;
-  static uint32_t yMidPoint = 0;
-  static bool firstCall = true;
-  if (true == firstCall)
+  DIJOYSTATE state;
+  if (true == JoystickCtrl::Instance()->PollDevice(0, &state))
   {
-    firstCall = false;
-    
-    // Retrieve a valid JoyStick Id
-    int32_t id = -1;
-    JOYINFOEX joyInfo;
-    joyInfo.dwSize = sizeof(JOYINFOEX);
-    joyInfo.dwFlags = JOY_RETURNALL;
-    for (size_t i = 0; i < 16; ++i)
+    // Ignore dead-zone
+    if ((abs(state.lX) < 25) &&
+        (abs(state.lY) < 25))
     {
-      if (JOYERR_NOERROR == joyGetPosEx(i, &joyInfo))
-      {
-        id = i;
-        break;
-      }
+      return;
     }
 
-    // Valid JoyStick found..
-    if (-1 != id)
+    // Set direction based on axis magnitude
+    if (abs(state.lX) > abs(state.lY))
     {
-      JOYCAPS joyCaps;
-      joyGetDevCaps(id, &joyCaps, sizeof(JOYCAPS));
-      xMidPoint = static_cast<uint32_t>((joyCaps.wXmax - joyCaps.wXmin) / 2);
-      yMidPoint = static_cast<uint32_t>((joyCaps.wYmax - joyCaps.wYmin) / 2);
-    }
-  }
-
-  if ((MM_JOY1MOVE == msg) ||
-      (MM_JOY2MOVE == msg))
-  {
-    int32_t x = LOWORD(lParam);
-    int32_t y = HIWORD(lParam);
-
-    if (abs(x) > abs(y))
-    {
-      OnKeyPressed(x < xMidPoint ? VK_LEFT : VK_RIGHT);
+      OnKeyPressed(state.lX > 0 ? VK_RIGHT : VK_LEFT);
     }
     else
     {
-      OnKeyPressed(y < yMidPoint ? VK_UP : VK_DOWN);
+      OnKeyPressed(state.lY > 0 ? VK_DOWN : VK_UP);
     }
   }
 }
