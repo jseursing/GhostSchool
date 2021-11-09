@@ -8,7 +8,6 @@ uniform mat4 transform;
 
 void main()
 {
-  // If no rotation, just draw to specified destination
   gl_Position = transform * vec4(objPos, 1.0);
 
 //  objOutColor = objColor;
